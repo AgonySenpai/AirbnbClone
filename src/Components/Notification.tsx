@@ -1,12 +1,5 @@
 import React, {Component} from 'react';
-import {
-	TouchableOpacity,
-	Text,
-	View,
-	StyleSheet,
-	Easing,
-	Animated,
-} from 'react-native';
+import {TouchableOpacity, Text, View, StyleSheet, Animated} from 'react-native';
 import colors from '../Styles/Colors';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -35,9 +28,6 @@ class Notification extends Component<MyProps, MyState> {
 			toValue: value,
 			duration: 2000,
 			useNativeDriver: false,
-			// velocity: 2,
-			// tension: 2,
-			// friction: 5,
 		}).start();
 	};
 
@@ -52,7 +42,11 @@ class Notification extends Component<MyProps, MyState> {
 			: this.animateNotification(-60);
 		const {positionValue} = this.state;
 		return (
-			<Animated.View style={[{opacity: positionValue}, styles.wrapper]}>
+			<Animated.View
+				style={[
+					{marginBottom: positionValue, opacity: positionValue},
+					styles.wrapper,
+				]}>
 				<View style={styles.notificationContent}>
 					<Text style={styles.errorText}>{type}</Text>
 					<Text style={styles.errorMessage}>{firstLine}</Text>
