@@ -1,6 +1,12 @@
 import React, {Component} from 'react';
 import colors from '../../Styles/Colors';
-import {View, Text, TextInput, StyleSheet} from 'react-native';
+import {
+	View,
+	Text,
+	TextInput,
+	StyleSheet,
+	TouchableOpacity,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 type MyProps = {
@@ -13,9 +19,23 @@ type MyProps = {
 	customStyles?: {};
 };
 
-type MyState = {};
+type MyState = {
+	secureInput: boolean;
+};
 
 class InputField extends Component<MyProps, MyState> {
+	constructor(props: MyProps) {
+		super(props);
+		this.state = {
+			secureInput: !(props.inputType === 'text' || props.inputType === 'email'),
+		};
+		this.toggleShowPassword = this.toggleShowPassword.bind(this);
+	}
+
+	toggleShowPassword = () => {
+		this.setState({secureInput: !this.state.secureInput});
+	};
+
 	render() {
 		const {
 			textColor,
@@ -34,13 +54,22 @@ class InputField extends Component<MyProps, MyState> {
 		return (
 			<View style={[customStyles, styles.wrapper]}>
 				<Text style={[{color, fontSize}, styles.label]}>{labelText}</Text>
+				{inputType === 'password' ? (
+					<TouchableOpacity
+						style={styles.showButton}
+						onPress={this.toggleShowPassword}>
+						<Text style={styles.showButtonText}>
+							{this.state.secureInput ? 'Show' : 'Hide'}
+						</Text>
+					</TouchableOpacity>
+				) : null}
 				<TextInput
 					autoCorrect={false}
 					style={[
 						{borderBottomColor: borderBottom, color: inputColor},
 						styles.inputField,
 					]}
-					secureTextEntry={inputType === 'password'}
+					secureTextEntry={this.state.secureInput}
 				/>
 			</View>
 		);
@@ -59,6 +88,14 @@ const styles = StyleSheet.create({
 		borderBottomWidth: 1,
 		paddingTop: 5,
 		paddingBottom: 5,
+	},
+	showButton: {
+		position: 'absolute',
+		right: 0,
+	},
+	showButtonText: {
+		color: colors.white,
+		fontWeight: '700',
 	},
 });
 
