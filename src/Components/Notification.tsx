@@ -26,14 +26,14 @@ class Notification extends Component<MyProps, MyState> {
 	constructor(props: MyProps) {
 		super(props);
 		this.state = {
-			positionValue: new Animated.Value(-60),
+			positionValue: new Animated.Value(0),
 		};
 	}
 
 	animateNotification = (value: number) => {
 		Animated.timing(this.state.positionValue, {
 			toValue: value,
-			duration: 1200,
+			duration: 2000,
 			useNativeDriver: false,
 			// velocity: 2,
 			// tension: 2,
@@ -52,7 +52,7 @@ class Notification extends Component<MyProps, MyState> {
 			: this.animateNotification(-60);
 		const {positionValue} = this.state;
 		return (
-			<Animated.View style={[{marginBottom: positionValue}, styles.wrapper]}>
+			<Animated.View style={[{opacity: positionValue}, styles.wrapper]}>
 				<View style={styles.notificationContent}>
 					<Text style={styles.errorText}>{type}</Text>
 					<Text style={styles.errorMessage}>{firstLine}</Text>

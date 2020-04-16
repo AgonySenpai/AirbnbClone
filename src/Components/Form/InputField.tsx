@@ -17,6 +17,7 @@ type MyProps = {
 	borderBottomColor?: string;
 	inputType: string;
 	customStyles?: {};
+	onChangeText(email: string): void;
 };
 
 type MyState = {
@@ -29,7 +30,6 @@ class InputField extends Component<MyProps, MyState> {
 		this.state = {
 			secureInput: !(props.inputType === 'text' || props.inputType === 'email'),
 		};
-		this.toggleShowPassword = this.toggleShowPassword.bind(this);
 	}
 
 	toggleShowPassword = () => {
@@ -45,6 +45,7 @@ class InputField extends Component<MyProps, MyState> {
 			labelColor,
 			inputType,
 			customStyles,
+			onChangeText,
 		} = this.props;
 		const fontSize: number = labelTextSize || 14;
 		const color: string = labelColor || colors.black;
@@ -69,6 +70,7 @@ class InputField extends Component<MyProps, MyState> {
 						{borderBottomColor: borderBottom, color: inputColor},
 						styles.inputField,
 					]}
+					onChangeText={onChangeText}
 					secureTextEntry={this.state.secureInput}
 				/>
 			</View>

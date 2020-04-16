@@ -16,32 +16,76 @@ type MyProps = {};
 
 type MyState = {
 	formValid: boolean;
+	validEmail: boolean;
+	emailAddress: string;
+	validPassword: boolean;
+	Password: string;
 };
 
 class LogIn extends Component<MyProps, MyState> {
 	constructor(props: MyProps) {
 		super(props);
 		this.state = {
-			formValid: false,
+			formValid: true,
+			validEmail: false,
+			emailAddress: '',
+			validPassword: false,
+			Password: '',
 		};
 	}
 
 	handleNextButton = () => {
-		alert(':V');
+		if (
+			this.state.emailAddress === 'Hello@gmail.com' &&
+			this.state.validPassword
+		) {
+			this.setState({formValid: true});
+		} else {
+			this.setState({formValid: false});
+		}
 	};
 
 	handleCloseNotification = () => {
-		this.setState({formValid: !this.state.formValid});
+		this.setState({formValid: true});
+	};
+
+	handleEmailChange = (email: string) => {
+		const emailCheckRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+		this.setState({emailAddress: email});
+		if (!this.state.validEmail) {
+			if (emailCheckRegex.test(email)) {
+				this.setState({validEmail: true});
+			}
+		} else if (!emailCheckRegex.test(email)) {
+			this.setState({validEmail: false});
+		}
+	};
+
+	handlePasswordChange = (password: string) => {
+		this.setState({Password: password});
+		if (!this.state.validPassword) {
+			if (password.length > 4) {
+				// Password has to be at least 4 characters long
+				this.setState({validPassword: true});
+			}
+		} else if (password.length <= 4) {
+			this.setState({validPassword: false});
+		}
+	};
+
+	toggleNextButtonState = () => {
+		const {validEmail, validPassword} = this.state;
+		return !(validEmail && validPassword);
 	};
 
 	render() {
 		const {formValid} = this.state;
 		const showNotification = !formValid;
 		const background = formValid ? colors.green01 : colors.darkOrange;
+		const notificationMarginTop: number = showNotification ? 10 : 0;
 		return (
 			<KeyboardAvoidingView
-				style={[{backgroundColor: background}, styles.wrapper]}
-				behavior={'padding'}>
+				style={[{backgroundColor: background}, styles.wrapper]}>
 				<View style={styles.scrollViewWrapper}>
 					<ScrollView style={styles.scrollView}>
 						<Text style={styles.loginHeader}>Log In</Text>
@@ -55,6 +99,7 @@ class LogIn extends Component<MyProps, MyState> {
 							customStyles={{
 								marginBottom: 30,
 							}}
+							onChangeText={this.handleEmailChange}
 						/>
 						<InputField
 							labelColor={colors.white}
@@ -66,15 +111,20 @@ class LogIn extends Component<MyProps, MyState> {
 							customStyles={{
 								marginBottom: 30,
 							}}
+							onChangeText={this.handlePasswordChange}
 						/>
 					</ScrollView>
 					<View style={styles.nextButton}>
 						<NextArrowButton
-							disabled={true}
+							disabled={this.toggleNextButtonState()}
 							handleNextButton={this.handleNextButton}
 						/>
 					</View>
-					<View>
+					<View
+						style={[
+							styles.notificationWrapper,
+							{marginTop: notificationMarginTop},
+						]}>
 						<Notification
 							type={'Error'}
 							firstLine={"Those Credentials don't look right "}
@@ -114,6 +164,12 @@ const styles = StyleSheet.create({
 		alignItems: 'flex-end',
 		right: 20,
 		bottom: 20,
+	},
+	notificationWrapper: {
+		position: 'absolute',
+		bottom: 0,
+		width: '100%',
+		zIndex: 999,
 	},
 });
 
