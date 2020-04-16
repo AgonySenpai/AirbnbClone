@@ -1,12 +1,6 @@
 import React, {Component} from 'react';
 import colors from '../../Styles/Colors';
-import {
-	View,
-	Text,
-	TextInput,
-	TouchableOpacity,
-	StyleSheet,
-} from 'react-native';
+import {View, Text, TextInput, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 type MyProps = {
@@ -15,6 +9,8 @@ type MyProps = {
 	labelColor?: string;
 	textColor?: string;
 	borderBottomColor?: string;
+	inputType: string;
+	customStyles?: {};
 };
 
 type MyState = {};
@@ -27,17 +23,24 @@ class InputField extends Component<MyProps, MyState> {
 			labelText,
 			labelTextSize,
 			labelColor,
+			inputType,
+			customStyles,
 		} = this.props;
 		const fontSize: number = labelTextSize || 14;
 		const color: string = labelColor || colors.black;
 		const inputColor = textColor || colors.white;
+		const borderBottom = borderBottomColor || 'transparent';
 
 		return (
-			<View style={styles.wrapper}>
+			<View style={[customStyles, styles.wrapper]}>
 				<Text style={[{color, fontSize}, styles.label]}>{labelText}</Text>
 				<TextInput
 					autoCorrect={false}
-					style={[{color: inputColor}, styles.inputField]}
+					style={[
+						{borderBottomColor: borderBottom, color: inputColor},
+						styles.inputField,
+					]}
+					secureTextEntry={inputType === 'password'}
 				/>
 			</View>
 		);
@@ -50,7 +53,7 @@ const styles = StyleSheet.create({
 	},
 	label: {
 		fontWeight: '700',
-		marginBottom: 10,
+		marginBottom: 20,
 	},
 	inputField: {
 		borderBottomWidth: 1,
